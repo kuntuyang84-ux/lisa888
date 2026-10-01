@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'; frame-ancestors 'none">
+<title>忆慈 · 账本</title>
+<script>document.documentElement.className="js";</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+::selection{background:rgba(0,113,227,.18);}
+body{background:#f2f2f4;color:#1d1d1f;font-family:-apple-system,BlinkMacSystemFont,"SF Pro SC","PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;line-height:1.55;padding-top:52px;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.blob{position:fixed;border-radius:50%;filter:blur(80px);z-index:0;pointer-events:none;}
+.b1{width:520px;height:520px;background:#eceaf4;top:-12%;left:-10%;opacity:1;animation:drift 34s ease-in-out infinite alternate;}
+.b2{width:460px;height:460px;background:#e2edf2;bottom:-14%;right:-12%;opacity:.95;animation:drift 40s ease-in-out -12s infinite alternate-reverse;}
+.b3{width:400px;height:400px;background:#f1ebdf;top:42%;left:55%;opacity:.9;animation:drift 46s ease-in-out -24s infinite alternate;}
+@keyframes drift{to{transform:translate(50px,36px) scale(1.08);}}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.35);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.6);display:flex;align-items:center;justify-content:space-between;padding:0 max(20px,calc(50% - 270px));height:52px;transition:height .35s cubic-bezier(.22,1,.36,1),background .35s ease,box-shadow .35s ease;}
+nav.scrolled{height:42px;background:rgba(255,255,255,.55);box-shadow:0 1px 14px rgba(31,35,65,.07),inset 0 1px 0 rgba(255,255,255,.6);}
+.brand{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:600;letter-spacing:1px;}
+.appicon{width:26px;height:26px;border-radius:6.5px;background:#1d1d1f;color:#fff;display:flex;align-items:center;justify-content:center;font-family:"Noto Serif SC","SimSun",serif;font-size:10.5px;font-weight:700;}
+.nstat{font-size:12px;color:#86868b;letter-spacing:1px;}
+.wrap{max-width:520px;margin:0 auto;padding:0 16px 48px;position:relative;z-index:1;}
+.hero{padding:34px 4px 20px;text-align:center;will-change:transform;}
+.hero h1{font-size:28px;font-weight:700;letter-spacing:6px;line-height:1.2;}
+.lead{font-size:15px;color:#86868b;margin-top:10px;}
+.lead b{color:#1d1d1f;font-weight:600;}
+.chev{width:9px;height:9px;border-right:1.5px solid #c7c7cc;border-bottom:1.5px solid #c7c7cc;transform:rotate(45deg);margin:18px auto 0;animation:nudge 2.2s ease-in-out infinite;}
+@keyframes nudge{0%,100%{transform:translateY(0) rotate(45deg);}50%{transform:translateY(5px) rotate(45deg);}}
+.card{background:rgba(255,255,255,.2);backdrop-filter:blur(32px) saturate(140%);-webkit-backdrop-filter:blur(32px) saturate(140%);border:1px solid rgba(255,255,255,.8);border-radius:18px;padding:14px 16px;margin-bottom:16px;box-shadow:0 8px 32px rgba(31,35,65,.05);}
+.card.focus{padding:20px 18px;margin-bottom:40px;margin-top:4px;box-shadow:0 10px 40px rgba(31,35,65,.07);}
+.card.soft{background:rgba(255,255,255,.12);}
+.card h2{font-size:14px;font-weight:600;color:#6e6e73;letter-spacing:1px;margin-bottom:8px;}
+.clause{display:flex;gap:8px;padding:6px 0;font-size:13.5px;color:#515154;}
+.clause .n{color:#86868b;flex-shrink:0;}
+.badge{display:inline-block;margin-top:8px;font-size:12px;font-weight:500;background:rgba(255,255,255,.45);border-radius:980px;padding:4px 14px;color:#1d1d1f;}
+.badge::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#30d158;margin-right:6px;box-shadow:0 0 6px rgba(48,209,88,.45);}
+.retro{font-size:11.5px;color:#a1a1a6;margin-top:8px;}
+.focus h2{font-size:15px;color:#1d1d1f;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+th{font-weight:500;color:#86868b;text-align:left;padding:6px 4px;border-bottom:1px solid #d2d2d7;font-size:11.5px;letter-spacing:.5px;}
+th.r,td.num,td.money{text-align:right;font-variant-numeric:tabular-nums;}
+td{padding:9px 4px;border-bottom:1px solid rgba(0,0,0,.05);vertical-align:top;color:#6e6e73;}
+td.num{color:#6e6e73;}
+tr.done td.money{font-size:17px;font-weight:700;color:#1d1d1f;}
+tr.done td{border-bottom:1px solid rgba(0,0,0,.08);}
+tr.done td:first-child{position:relative;font-weight:600;color:#1d1d1f;}
+tr.done td:first-child::before{content:"";position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:58%;border-radius:2px;background:#b3342e;}
+tr.pend td:first-child::before{content:"";position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:58%;border-radius:2px;background:#0071e3;opacity:.5;}
+tr.pend td{background:rgba(0,113,227,.03);}
+tr.futu td{padding:4.5px 4px;color:#c7c7cc;font-size:12.5px;border-bottom:1px solid rgba(0,0,0,.03);}
+tr.futu .tag{opacity:.5;}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.dot.g{background:#30d158;box-shadow:0 0 6px rgba(48,209,88,.45);}
+.dot.o{background:#ff9f0a;box-shadow:0 0 6px rgba(255,159,10,.4);}
+.dot.gr{background:#c7c7cc;}
+.tag{display:inline-block;font-size:11px;border-radius:4px;padding:1px 8px;border:1px solid;}
+.tag.done{color:#1d1d1f;background:#e8f8ec;font-weight:500;}
+.tag.pend{color:#0071e3;background:rgba(0,113,227,.07);font-weight:500;}
+.tag.futu{color:#aeaeb2;background:#f5f5f7;}
+.memo{font-size:11px;color:#a1a1a6;margin-top:2px;}
+.foot{text-align:center;padding:26px 0 4px;}
+.motto{font-size:14px;color:#6e6e73;font-weight:600;letter-spacing:3px;}
+.reveal,.row-reveal{opacity:1;transform:none;transition:opacity .7s ease,transform .8s cubic-bezier(.16,1,.3,1),background .3s ease;}
+html.js .reveal{opacity:0;transform:translateY(26px) scale(.985);transition-delay:0ms;}
+html.js .reveal.in{opacity:1;transform:none;transition-delay:var(--d,0ms);}
+html.js .row-reveal{opacity:0;transform:translateX(26px);}
+html.js .row-reveal.in{opacity:1;transform:none;transition-delay:var(--d,0ms);}
+@media (prefers-reduced-motion: reduce){html.js .reveal,html.js .row-reveal{opacity:1;transform:none;transition:none;}.chev{animation:none;}}
+</style>
+</head>
+<body>
+<nav id="nav">
+<div class="brand"><span class="appicon">忆慈</span><span>账本</span></div>
+<div class="nstat">忆慈协议</div>
+</nav>
+<div class="wrap">
+<div class="hero" id="hero">
+<h1>忆慈</h1>
+<p class="lead">账给妈记着，<b>一个月不落。</b></p>
+<div class="chev"></div>
+</div>
+<div class="card reveal">
+<h2>转了多少钱</h2>
+<div class="stats">
+<div class="stat"><b data-count="132">132</b><span>元</span></div>
+<div class="stat"><b data-count="2">2</b><span>个月转了</span></div>
+</div>
+</div>
+<div class="card soft reveal">
+<h2>跟妈说好的</h2>
+<div class="clause"><span class="n">1.</span><span>每个月工资到手，转 5% 给妈，零头往上凑个整</span></div>
+<div class="clause"><span class="n">2.</span><span>发薪三天内转</span></div>
+<div class="clause"><span class="n">3.</span><span>转账备注写：忆慈协议X月收入5%</span></div>
+<span class="badge">纸质的已经签了（9月30号）</span>
+<div class="retro">8月7号入职那天起的账都记着，10月开始按说好的每月转</div>
+</div>
+<div class="card focus reveal">
+<h2>账目</h2>
+<table>
+<thead><tr><th>月份</th><th class="r">工资实发</th><th class="r">该转</th><th class="r">转了</th><th></th></tr></thead>
+<tbody>
+<tr class="row-reveal done" style="--d:0ms"><td>2026-08</td><td class="num">965.52</td><td class="num">49</td><td class="money">49</td><td><span class="dot g"></span>转了<div class="memo">入职那个月，从8月7号上班起算</div></td></tr>
+<tr class="row-reveal done" style="--d:60ms"><td>2026-09</td><td class="num">1,657.17</td><td class="num">83</td><td class="money">83</td><td><span class="dot g"></span>转了<div class="memo">忆慈协议9月收入5%</div></td></tr>
+<tr class="row-reveal pend" style="--d:120ms"><td>2026-10</td><td class="num">—</td><td class="num">—</td><td class="money">—</td><td><span class="dot o"></span>等发薪<div class="memo">10月底发工资，转第一笔</div></td></tr>
+<tr class="row-reveal futu" style="--d:180ms"><td>2026-11</td><td class="num">—</td><td class="num">—</td><td class="money">—</td><td><span class="dot gr"></span>还没到</td></tr>
+<tr class="row-reveal futu" style="--d:220ms"><td>2026-12</td><td class="num">—</td><td class="num">—</td><td class="money">—</td><td><span class="dot gr"></span>还没到</td></tr>
+<tr class="row-reveal futu" style="--d:260ms"><td>2027-01</td><td class="num">—</td><td class="num">—</td><td class="money">—</td><td><span class="dot gr"></span>还没到</td></tr>
+<tr class="row-reveal futu" style="--d:300ms"><td>2027-02</td><td class="num">—</td><td class="num">—</td><td class="money">—</td><td><span class="dot gr"></span>还没到</td></tr>
+<tr class="row-reveal futu" style="--d:340ms"><td>2027-03</td><td class="num">—</td><td class="num">—</td><td class="money">—</td><td><span class="dot gr"></span>还没到</td></tr>
+<tr class="row-reveal futu" style="--d:380ms"><td>2027-04</td><td class="num">—</td><td class="num">—</td><td class="money">—</td><td><span class="dot gr"></span>还没到</td></tr>
+<tr class="row-reveal futu" style="--d:420ms"><td>2027-05</td><td class="num">—</td><td class="num">—</td><td class="money">—</td><td><span class="dot gr"></span>还没到</td></tr>
+<tr class="row-reveal futu" style="--d:460ms"><td>2027-06</td><td class="num">—</td><td class="num">—</td><td class="money">—</td><td><span class="dot gr"></span>还没到</td></tr>
+</tbody>
+</table>
+</div>
+<div class="foot">
+<div class="motto">忆，是记得。慈，是妈妈。</div>
+</div>
+</div>
+<script>
+(function(){
+var rm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (!rm && "IntersectionObserver" in window) {
+var io = new IntersectionObserver(function(entries){
+entries.forEach(function(e){ e.target.classList.toggle("in", e.isIntersecting); });
+}, { threshold: 0.15, rootMargin: "0px 0px -6% 0px" });
+document.querySelectorAll(".reveal,.row-reveal").forEach(function(el){ io.observe(el); });
+}
+if (!rm && "IntersectionObserver" in window) {
+var cio = new IntersectionObserver(function(entries){
+entries.forEach(function(e){
+var el = e.target, target = +el.dataset.count;
+if (e.isIntersecting) {
+var t0 = performance.now();
+(function tick(t){
+var p = Math.min((t - t0) / 1100, 1), ease = 1 - Math.pow(1 - p, 4);
+el.textContent = Math.round(target * ease);
+if (p < 1) requestAnimationFrame(tick);
+})(t0);
+} else {
+el.textContent = 0;
+}
+});
+}, { threshold: .5 });
+document.querySelectorAll("[data-count]").forEach(function(el){ cio.observe(el); });
+}
+var nav = document.getElementById("nav"), hero = document.getElementById("hero");
+addEventListener("scroll", function(){
+nav.classList.toggle("scrolled", scrollY > 8);
+if (!rm) {
+hero.style.transform = "translateY(" + Math.min(scrollY * 0.06, 32) + "px)";
+hero.style.opacity = Math.max(1 - scrollY / 700, .3);
+}
+}, { passive: true });
+})();
+</script>
+</body>
+</html>
